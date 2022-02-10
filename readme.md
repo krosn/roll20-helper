@@ -7,3 +7,11 @@ Activate with 'source {path}/bin/activate'
 > Remember to 'pip install -r requirements.txt'
 ## Deactivation
 'deactivate'
+
+# Deployment
+This project is integrated with [Heroku](https://dashboard.heroku.com/apps/roll20-helper).
+The Procfile describes how to start the service.
+
+# References
+- [FastAPI](https://fastapi.tiangolo.com/) for Python API
+- [fetch](https://javascript.info/fetch) for JS requests
