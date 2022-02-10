@@ -32,7 +32,7 @@
           let staticDamage = document.getElementById("static-damage").value;
           let maxSpellLevel = document.getElementById("max-spell-level").value;
 
-          var url = new URL('http://localhost:8000/spell_macro')
+          var url = new URL('/spell_macro', document.location)
 
           var params = {
               base_spell_slot:baseSpellLevel, 
