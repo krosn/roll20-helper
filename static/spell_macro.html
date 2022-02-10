@@ -1,0 +1,52 @@
+<html>
+<title>Spell Macro Generator</title>
+<body>
+    <h1>Spell Macro Generator</h1>
+
+    <label>Base Spell Level:</label>
+    <input type="number" id="base-spell-level" min="1" max="9" value="1">
+
+    <label>Damage Dice Per Level:</label>
+    <input type="text" id="damage-per-level" placeholder="ex. d6" >
+
+    <label>Static Damage:</label>
+    <input type="text" id="static-damage" value="0">
+
+    <label>Max Spell Slot for scaling:</label>
+    <input type="number" id="max-spell-level" value="9" min="1" max="9">
+
+    <button onclick="generateMacro()">Try it</button>
+
+    <label>Macro:</label>
+    <input type="text" id="macro" disabled="true" placeholder="Macro will appear here" value="">
+
+    <script>
+        async function generateMacro() {
+          let baseSpellLevel = document.getElementById("base-spell-level").value;
+          let damagePerLevel = document.getElementById("damage-per-level").value;
+          let staticDamage = document.getElementById("static-damage").value;
+          let maxSpellLevel = document.getElementById("max-spell-level").value;
+
+          var url = new URL('http://localhost:8000/spell_macro')
+
+          var params = {
+              base_spell_slot:baseSpellLevel, 
+              damage_per_level:damagePerLevel,
+              static_damage:staticDamage,
+              max_slot:maxSpellLevel
+            }
+
+          url.search = new URLSearchParams(params).toString();
+
+          let response = await fetch(url);
+
+          if (response.ok) {
+            let macroResponse = await response.json()
+            document.getElementById("macro").value = macroResponse.macro;
+          } else {
+            alert("HTTP-Error: " + response.status);
+          }
+        }
+    </script>
+</body>
+</html>
