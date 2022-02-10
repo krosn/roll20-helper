@@ -8,6 +8,9 @@ Activate with 'source {path}/bin/activate'
 ## Deactivation
 'deactivate'
 
+# Run locally
+`uvicorn main:app --reload`
+
 # Deployment
 This project is integrated with [Heroku](https://dashboard.heroku.com/apps/roll20-helper).
 The Procfile describes how to start the service.
