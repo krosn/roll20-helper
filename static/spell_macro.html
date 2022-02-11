@@ -48,13 +48,18 @@
 
     <button class="button is-link" onclick="generateMacro()">Generate</button>
 
-    <label class="label">Macro:</label>
-    <div class="field has-addons">
-      <div class="control">
-        <input type="text" class="input is-success" id="macro" disabled="true" placeholder="Macro will appear here" value="" style="width: auto;">
+    <div class="box">
+      <div class="field">
+        <label class="label">Macro</label>
+        <div class="control">
+          <textarea class="textarea has-fixed-size is-success" id="macro" readonly placeholder="Macro will appear here">
+          </textarea>
+        </div>
       </div>
-      <div class="control">
-        <button class="button is-info" onclick="copyMacroToClipboard()">Copy</button>
+      <div class="field">
+        <div class="control">
+          <button class="button is-info" onclick="copyMacroToClipboard()">Copy</button>
+        </div>
       </div>
     </div>
   </div>
@@ -81,7 +86,6 @@
         if (response.ok) {
           let macroResponse = await response.json()
           document.getElementById("macro").value = macroResponse.macro;
-          document.getElementById("macro").size = macroResponse.macro.length;
         } else {
           alert("HTTP-Error: " + response.status);
         }
