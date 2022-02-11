@@ -1,47 +1,120 @@
-from fastapi import FastAPI
+from typing import Iterator, List, Tuple
+import re
 
-def make_spell_macro(base_spell_slot: int,
+class Die:
+    sides: int
+    multiplier: int = 1
+
+    def __init__(self, sides: int, multiplier: int) -> None:
+        self.sides = int(sides)
+        self.multiplier = int(multiplier)
+
+    def multiply(self, factor: int) -> 'Die':
+        return Die(self.sides, self.multiplier*factor)
+
+    def is_die(input_string: str) -> bool:
+        return re.fullmatch(r'\d*[d|D]\d+', input_string)
+
+    def from_string(input_string: str) -> 'Die':
+        input_string = input_string.lower()
+
+        # If no number is present before the die, assume it's a single die.
+        if input_string.startswith('d'):
+            input_string = '1' + input_string
+
+        tokens = input_string.split('d')
+
+        if len(tokens) != 2:
+            raise Exception(f'Failed to parse "{input_string}" as a die.')
+
+        return Die(multiplier=tokens[0], sides=tokens[1])
+
+    def __str__(self) -> str:
+        return f'{self.multiplier}d{self.sides}'
+
+
+class SpellMacroGenerator:
+    @staticmethod
+    def damage_macro(base_spell_slot: int,
+                     base_damage: str, 
                      damage_per_level: str, 
-                     static_damage: str = '0', 
                      max_slot: int = 9) -> str:
-    """Makes a Roll20 spell macro with dropdown spell level selection.
-       Note: Currently only support damage dice with no prefix (Ex. d8/level not 2d8/level)
+        # Sanity checks
+        if not (1 <= base_spell_slot <= 9):
+            raise Exception('Base spell slot must be between 1 and 9.')
+        if not (1 <= max_slot <= 9):
+            raise Exception('Max spell slot must be between 1 and 9.')
+        if max_slot < base_spell_slot:
+            raise Exception('Base spell cannot be greater than max spell slot.')
 
-    Args:
-        base_spell_slot (int): The standard spell slot for the spell.
-        damage_per_level (str): The scaling damage die per extra spell slot (ex. 'd8').
-        static_damage (str, optional): Any damage that does not scale the level.
-                                       (ex. '4' or 'd6+2'). Defaults to 0.
-        max_slot (int, optional): The maximum spell slot that the spell can be upcast
-                                  to for additional damage. Defaults to 9.
+        # Omit the base damage if it's empty or zero.
+        if not base_damage or base_damage.strip() == '0':
+            base_damage = None
 
-    Raises:
-        Exception: [description]
-        Exception: [description]
-        Exception: [description]
+        # Take the first die, ignore everything else for now.
+        # TODO: Support spells that scale by a fixed amount (ex. +5/level instead of additional d4 per level)
+        per_level_dice, _ = SpellMacroGenerator._separate_dice_and_integers(damage_per_level)
+        per_level_die = per_level_dice[0]
 
-    Returns:
-        str: The formatted macro to use in the Roll20 damage slot. 
-             To use in a class action, simply wrap the expression in a pair of double square brackets.
-    """
-    if not (1 <= base_spell_slot <= 9):
-        raise Exception('Base spell slot must be between 1 and 9.')
-    if not (1 <= max_slot <= 9):
-        raise Exception('Max spell slot must be between 1 and 9.')
-    if max_slot < base_spell_slot:
-        raise Exception('Base spell cannot be greater than max spell slot.')
+        # Generate the dropdown portion. This will also determine the die multiplier.
+        dropdown_choices = SpellMacroGenerator._dropdown_choices(base_spell_slot, max_slot, per_level_die, base_damage)
+        dropdown_string = '|'.join(dropdown_choices)
 
-    static_damage_text = '' if static_damage == '0' else f'+{static_damage}'
+        # Format the final macro.
+        base_damage_text = f' + {base_damage}' if base_damage else ''
+        return f'[[?{{What spell slot?|{dropdown_string}}}]]d{per_level_die.sides}{base_damage_text}'
 
-    # Ex. ?{What Spell Slot of Smite?|None,No Smite|1,[[2d8]] Radiant Damage|2,[[3d8]] Radiant Damage|3,[[4d8]] Radiant Damage|4,[[5d8]] Radiant Damage}
-    dropdown_choices = [f'{level} ({level}{damage_per_level}{static_damage_text}),{level}' for level in range(base_spell_slot, max_slot)]
-    dropdown_string = '|'.join(dropdown_choices)
+    @staticmethod
+    def _dropdown_choices(base_spell_slot: int,
+                          max_slot: int,
+                          increase_per_level: Die,
+                          base_damage: str | None) -> Iterator[str]:
+        for level in range(base_spell_slot, max_slot):
+            upcast_factor = level - base_spell_slot
 
-    # Ex. [[?{spell slot? (+d8)|1}+2]]d8
-    return f'[[?{{Spell slot?|{dropdown_string}}}]]{damage_per_level}{static_damage_text}'
+            if upcast_factor == 0:
+                # Avoid having a die with 0 as the multiplier. (ex. 0d6)
+                multiplier = 0
+                damage_die = ''
+            else:
+                upcast_dice = increase_per_level.multiply(upcast_factor)
+                multiplier = upcast_dice.multiplier
+                damage_die = str(upcast_dice)
+
+            # Only show components with values.
+            damage = f'{damage_die} + {base_damage}' if damage_die and base_damage else damage_die + base_damage
+
+            yield f'Level {level} ({damage}),{multiplier}'
+
+    @staticmethod
+    def _separate_dice_and_integers(string: str) -> Tuple[List[Die], int]:
+        dice = []
+        flat_amount = 0
+        
+        tokens = re.split(r'[\s+]', string)
+
+        for token in tokens:
+            if not token:
+                continue
+            if token.isdigit():
+                flat_amount += int(token)
+            elif Die.is_die(token):
+                dice.append(Die.from_string(token))
+            else:
+                raise Exception(f'Cannot parse "{string}" to dice and integers')
+
+        return dice, flat_amount
+
 
 def main():
-    print(make_spell_macro(1, 'd8', '3', 9))
+    die = Die(sides=6, multiplier=3)
+    print(f'Die: {die}')
+    print()
+    print(f'Multiplied by 2: {die.multiply(2)}')
+    print()
+    print(SpellMacroGenerator.damage_macro(1, base_damage='3', damage_per_level='d8'))
+    print()
+    print(SpellMacroGenerator.damage_macro(5, base_damage='3d8', damage_per_level='2d6', max_slot=8))
 
 if __name__ == "__main__":
     main()
