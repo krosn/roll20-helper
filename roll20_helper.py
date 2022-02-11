@@ -49,7 +49,7 @@ class SpellMacroGenerator:
 
         # Omit the base damage if it's empty or zero.
         if not base_damage or base_damage.strip() == '0':
-            base_damage = None
+            base_damage = ''
 
         # Take the first die, ignore everything else for now.
         # TODO: Support spells that scale by a fixed amount (ex. +5/level instead of additional d4 per level)
