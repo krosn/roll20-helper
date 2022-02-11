@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="main.css">
   <title>Spell Macro Generator</title>
 </head>
-<body class="mg-medium">
+<body>
   <section class="hero is-danger">
     <div class="hero-body">
       <p class="title">
@@ -18,7 +18,7 @@
   </section>
   
   <div class="columns">
-    <div class="column">
+    <div class="column m-2">
       <div class="box">
         <div class="field">
           <label class="label">Base Spell Level:</label>
@@ -54,13 +54,13 @@
       </div>
     </div>
 
-    <div class="column">
+    <div class="column m-2">
       <div class="box">
         <div class="content">
           <p class="has-text-centered">Paste this macro into a spell's damage box or wrap it in [[ ]] to use on its own!</p>
-          <textarea class="textarea has-fixed-size is-success" id="macro" readonly>Macro will appear here</textarea>
+          <textarea class="textarea has-fixed-size is-info" id="macro" readonly>Macro will appear here...</textarea>
         </div>
-        <button class="button card-footer-item is-info is-fullwidth" onclick="copyMacroToClipboard()">Copy</button>
+        <button class="button card-footer-item is-link is-fullwidth" onclick="copyMacroToClipboard()">Copy</button>
       </div>
     </div>
   </div>
