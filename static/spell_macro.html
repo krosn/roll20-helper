@@ -1,58 +1,84 @@
+<!DOCTYPE html>
 <html>
-<title>Spell Macro Generator</title>
-<body>
-    <h1>Spell Macro Generator</h1>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="main.css">
+  <title>Spell Macro Generator</title>
+</head>
+<body class="mg-medium">
+  <section class="hero is-danger">
+    <div class="hero-body">
+      <p class="title">
+        Spell Macro Generator
+      </p>
+      <p class="subtitle">
+        Try out the spell damage macro generator!
+      </p>
+    </div>
+  </section>
 
-    <label>Base Spell Level:</label>
-    <input type="number" id="base-spell-level" min="1" max="9" value="1">
-    <br>
+  <div class="box">
+    <div class="field">
+      <label class="label">Base Spell Level:</label>
+      <div class="control">
+        <input class="input" type="number" id="base-spell-level" min="1" max="9" value="1">
+      </div>
+    </div>
+    
+    <div class="field">
+      <label class="label">Damage Dice Per Level:</label>
+      <div class="control">
+        <input class="input" type="text" id="damage-per-level" placeholder="ex. d6" >
+      </div>
+    </div>
 
-    <label>Damage Dice Per Level:</label>
-    <input type="text" id="damage-per-level" placeholder="ex. d6" >
-    <br>
+    <div class="field">
+      <label class="label">Static Damage:</label>
+      <div class="control">
+        <input class="input" type="text" id="static-damage" value="0">
+      </div>
+    </div>
 
-    <label>Static Damage:</label>
-    <input type="text" id="static-damage" value="0">
-    <br>
+    <div class="field">
+      <label class="label">Max Spell Slot for scaling:</label>
+      <div class="control">
+      <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9">
+      </div>
+    </div>
 
-    <label>Max Spell Slot for scaling:</label>
-    <input type="number" id="max-spell-level" value="9" min="1" max="9">
-    <br>
+    <button class="button is-primary" onclick="generateMacro()">Try it</button>
 
-    <button onclick="generateMacro()">Try it</button>
+    <label class="label">Macro:</label>
+    <input type="text" class="input" id="macro" disabled="true" placeholder="Macro will appear here" value="" style="width: auto;">
+  </div>
+  <script>
+      async function generateMacro() {
+        let baseSpellLevel = document.getElementById("base-spell-level").value;
+        let damagePerLevel = document.getElementById("damage-per-level").value;
+        let staticDamage = document.getElementById("static-damage").value;
+        let maxSpellLevel = document.getElementById("max-spell-level").value;
 
-    <br>
-    <label>Macro:</label>
-    <input type="text" id="macro" disabled="true" placeholder="Macro will appear here" value="" style="width: auto;">
+        var url = new URL('/spell_macro', document.location)
 
-    <script>
-        async function generateMacro() {
-          let baseSpellLevel = document.getElementById("base-spell-level").value;
-          let damagePerLevel = document.getElementById("damage-per-level").value;
-          let staticDamage = document.getElementById("static-damage").value;
-          let maxSpellLevel = document.getElementById("max-spell-level").value;
-
-          var url = new URL('/spell_macro', document.location)
-
-          var params = {
-              base_spell_slot:baseSpellLevel, 
-              damage_per_level:damagePerLevel,
-              static_damage:staticDamage,
-              max_slot:maxSpellLevel
-            }
-
-          url.search = new URLSearchParams(params).toString();
-
-          let response = await fetch(url);
-
-          if (response.ok) {
-            let macroResponse = await response.json()
-            document.getElementById("macro").value = macroResponse.macro;
-            document.getElementById("macro").size = macroResponse.macro.length;
-          } else {
-            alert("HTTP-Error: " + response.status);
+        var params = {
+            base_spell_slot:baseSpellLevel, 
+            damage_per_level:damagePerLevel,
+            static_damage:staticDamage,
+            max_slot:maxSpellLevel
           }
+
+        url.search = new URLSearchParams(params).toString();
+
+        let response = await fetch(url);
+
+        if (response.ok) {
+          let macroResponse = await response.json()
+          document.getElementById("macro").value = macroResponse.macro;
+          document.getElementById("macro").size = macroResponse.macro.length;
+        } else {
+          alert("HTTP-Error: " + response.status);
         }
-    </script>
+      }
+  </script>
 </body>
 </html>
