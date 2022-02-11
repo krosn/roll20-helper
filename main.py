@@ -31,11 +31,12 @@ def read_spell_macro(base_spell_slot: int,
                      max_slot: Optional[int] = 9):
     try:
         damage_macro = SpellMacroGenerator.damage_macro(base_spell_slot, static_damage, damage_per_level, max_slot)
-    except:
+    except Exception as ex:
         # TODO: Real excpetion handling.
         damage_macro = 'Unable to create macro, please check values.'
         signature = make_signature(base_spell_slot=base_spell_slot, static_damage=static_damage, damage_per_level=damage_per_level, max_slot=max_slot)
         print(f'Failed to parse: {signature}')
+        print(ex)
     
     return {'macro' : damage_macro}
 
