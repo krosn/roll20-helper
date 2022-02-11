@@ -69,7 +69,7 @@ class SpellMacroGenerator:
                           max_slot: int,
                           increase_per_level: Die,
                           base_damage: str | None) -> Iterator[str]:
-        for level in range(base_spell_slot, max_slot):
+        for level in range(base_spell_slot, max_slot + 1):
             upcast_factor = level - base_spell_slot
 
             if upcast_factor == 0:
