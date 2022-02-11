@@ -42,14 +42,21 @@
     <div class="field">
       <label class="label">Max Spell Slot for scaling:</label>
       <div class="control">
-      <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9">
+        <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9">
       </div>
     </div>
 
     <button class="button is-link" onclick="generateMacro()">Generate</button>
 
     <label class="label">Macro:</label>
-    <input type="text" class="input is-success" id="macro" disabled="true" placeholder="Macro will appear here" value="" style="width: auto;">
+    <div class="field has-addons">
+      <div class="control">
+        <input type="text" class="input is-success" id="macro" disabled="true" placeholder="Macro will appear here" value="" style="width: auto;">
+      </div>
+      <div class="control">
+        <button class="button is-info" onclick="copyMacroToClipboard()">Copy</button>
+      </div>
+    </div>
   </div>
   <script>
       async function generateMacro() {
@@ -78,6 +85,17 @@
         } else {
           alert("HTTP-Error: " + response.status);
         }
+      }
+
+      function copyMacroToClipboard() {
+        var copyText = document.getElementById("macro");
+
+        /* Select the text field */
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+        /* Copy to clipboard*/
+        navigator.clipboard.writeText(copyText.value);
       }
   </script>
 </body>
