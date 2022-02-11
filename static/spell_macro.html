@@ -24,18 +24,18 @@
         <input class="input" type="number" id="base-spell-level" min="1" max="9" value="1">
       </div>
     </div>
+
+    <div class="field">
+      <label class="label">Base Damage:</label>
+      <div class="control">
+        <input class="input" type="text" id="base-damage" value="0">
+      </div>
+    </div>
     
     <div class="field">
       <label class="label">Damage Dice Per Level:</label>
       <div class="control">
         <input class="input" type="text" id="damage-per-level" placeholder="ex. d6" >
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">Static Damage:</label>
-      <div class="control">
-        <input class="input" type="text" id="static-damage" value="0">
       </div>
     </div>
 
@@ -67,7 +67,7 @@
       async function generateMacro() {
         let baseSpellLevel = document.getElementById("base-spell-level").value;
         let damagePerLevel = document.getElementById("damage-per-level").value;
-        let staticDamage = document.getElementById("static-damage").value;
+        let baseDamage = document.getElementById("base-damage").value;
         let maxSpellLevel = document.getElementById("max-spell-level").value;
 
         var url = new URL('/spell_macro', document.location)
@@ -75,7 +75,7 @@
         var params = {
             base_spell_slot:baseSpellLevel, 
             damage_per_level:damagePerLevel,
-            static_damage:staticDamage,
+            static_damage:baseDamage,
             max_slot:maxSpellLevel
           }
 
