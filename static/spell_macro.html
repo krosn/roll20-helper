@@ -16,53 +16,55 @@
       </p>
     </div>
   </section>
-
-  <div class="box">
-    <div class="field">
-      <label class="label">Base Spell Level:</label>
-      <div class="control">
-        <input class="input" type="number" id="base-spell-level" min="1" max="9" value="1">
-      </div>
-    </div>
-
-    <div class="field">
-      <label class="label">Base Damage:</label>
-      <div class="control">
-        <input class="input" type="text" id="base-damage" value="0">
-      </div>
-    </div>
+  
+  <div class="columns">
+    <div class="column">
+      <div class="box">
+        <div class="field">
+          <label class="label">Base Spell Level:</label>
+          <div class="control">
+            <input class="input" type="number" id="base-spell-level" min="1" max="9" value="1">
+          </div>
+        </div>
     
-    <div class="field">
-      <label class="label">Damage Dice Per Level:</label>
-      <div class="control">
-        <input class="input" type="text" id="damage-per-level" placeholder="ex. d6" >
+        <div class="field">
+          <label class="label">Base Damage:</label>
+          <div class="control">
+            <input class="input" type="text" id="base-damage" placeholder="ex. 3d6 for fireball">
+          </div>
+        </div>
+        
+        <div class="field">
+          <label class="label">Damage Dice Per Level:</label>
+          <div class="control">
+            <input class="input" type="text" id="damage-per-level" placeholder="ex. d6 for fireball" >
+          </div>
+        </div>
+    
+        <div class="field">
+          <label class="label">Max Spell Slot for scaling:</label>
+          <div class="control">
+            <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9">
+          </div>
+        </div>
+    
+        <div class="block">
+          <button class="button is-link" onclick="generateMacro()">Generate</button>
+        </div>
       </div>
     </div>
 
-    <div class="field">
-      <label class="label">Max Spell Slot for scaling:</label>
-      <div class="control">
-        <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9">
-      </div>
-    </div>
-
-    <button class="button is-link" onclick="generateMacro()">Generate</button>
-
-    <div class="box">
-      <div class="field">
-        <label class="label">Macro</label>
-        <div class="control">
-          <textarea class="textarea has-fixed-size is-success" id="macro" readonly placeholder="Macro will appear here">
-          </textarea>
+    <div class="column">
+      <div class="box">
+        <div class="content">
+          <p class="has-text-centered">Paste this macro into a spell's damage box or wrap it in [[ ]] to use on its own!</p>
+          <textarea class="textarea has-fixed-size is-success" id="macro" readonly>Macro will appear here</textarea>
         </div>
-      </div>
-      <div class="field">
-        <div class="control">
-          <button class="button is-info" onclick="copyMacroToClipboard()">Copy</button>
-        </div>
+        <button class="button card-footer-item is-info is-fullwidth" onclick="copyMacroToClipboard()">Copy</button>
       </div>
     </div>
   </div>
+  
   <script>
       async function generateMacro() {
         let baseSpellLevel = document.getElementById("base-spell-level").value;
