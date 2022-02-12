@@ -20,3 +20,4 @@ The Procfile describes how to start the service.
 # References
 - [FastAPI](https://fastapi.tiangolo.com/) for Python API
 - [fetch](https://javascript.info/fetch) for JS requests
+- [Bulma](https://bulma.io/documentation/overview/start/) for CSS styling
