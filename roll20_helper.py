@@ -40,8 +40,8 @@ class SpellMacroGenerator:
                      damage_per_level: str, 
                      max_slot: int = 9) -> str:
         # Sanity checks
-        if not (1 <= base_spell_slot <= 9):
-            raise Exception('Base spell slot must be between 1 and 9.')
+        if not (1 <= base_spell_slot <= 8):
+            raise Exception('Base spell slot must be between 1 and 8.')
         if not (1 <= max_slot <= 9):
             raise Exception('Max spell slot must be between 1 and 9.')
         if max_slot < base_spell_slot:
