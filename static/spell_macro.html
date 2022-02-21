@@ -135,8 +135,8 @@
         let damagePerLevelValue = damagePerLevel.value;
         let damagePerLevelError = document.getElementById("damage-per-level-error");
 
-        if (!damagePerLevelValue.trim()) {
-          damagePerLevelError.innerText = 'Please enter a value.';
+        if (!damagePerLevelValue.trim() || !/^\d*[d|D]\d+$/.test(damagePerLevelValue.trim())) {
+          damagePerLevelError.innerText = 'Please enter a value. Must be a single type of scaling die like "3d6" or "D8".';
           damagePerLevel.classList.add('is-danger');
           return false;
         } else {
