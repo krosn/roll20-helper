@@ -22,6 +22,7 @@
       <div class="box">
         <div class="field">
           <label class="label">Base Spell Level:</label>
+          <p class="has-text-danger" id="base-spell-level-error"></p>
           <div class="control">
             <input class="input" type="number" id="base-spell-level" min="1" max="8" value="1">
           </div>
@@ -29,6 +30,7 @@
     
         <div class="field">
           <label class="label">Base Damage:</label>
+          <p class="has-text-danger" id="base-damage-error"></p>
           <div class="control">
             <input class="input" type="text" id="base-damage" placeholder="ex. 3d6 for fireball">
           </div>
@@ -36,6 +38,7 @@
         
         <div class="field">
           <label class="label">Damage Dice Per Level:</label>
+          <p class="has-text-danger" id="damage-per-level-error"></p>
           <div class="control">
             <input class="input" type="text" id="damage-per-level" placeholder="ex. d6 for fireball" >
           </div>
@@ -43,6 +46,7 @@
     
         <div class="field">
           <label class="label">Max Spell Slot for scaling:</label>
+          <p class="has-text-danger" id="max-spell-level-error"></p>
           <div class="control">
             <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9">
           </div>
@@ -67,6 +71,14 @@
   
   <script>
       async function generateMacro() {
+
+        let isValid = validate();
+
+        if (!isValid) {
+          document.getElementById("macro").value = 'Please correct input.'
+          return;
+        }
+
         let baseSpellLevel = document.getElementById("base-spell-level").value;
         let damagePerLevel = document.getElementById("damage-per-level").value;
         let baseDamage = document.getElementById("base-damage").value;
@@ -91,6 +103,66 @@
         } else {
           alert("HTTP-Error: " + response.status);
         }
+      }
+
+      function validate() {
+        let valid = true; 
+
+        // Set messages for any invalid fields
+        let baseSpellLevel = document.getElementById("base-spell-level");
+        let baseSpellLevelValue = baseSpellLevel.value;
+        let baseSpellLevelError = document.getElementById("base-spell-level-error");
+
+        if (isNaN(baseSpellLevelValue) || baseSpellLevelValue < 1 || baseSpellLevelValue > 8) {
+          baseSpellLevelError.innerText = 'Please enter a value between 1-8.';
+          baseSpellLevel.classList.add('is-danger');
+          valid = false;
+        } else {
+          baseSpellLevelError.innerText = '';
+          baseSpellLevel.classList.remove('is-danger');
+        }
+
+        let damagePerLevel = document.getElementById("damage-per-level");
+        let damagePerLevelValue = damagePerLevel.value;
+        let damagePerLevelError = document.getElementById("damage-per-level-error");
+
+        if (!damagePerLevelValue) {
+          damagePerLevelError.innerText = 'Please enter a value.';
+          damagePerLevel.classList.add('is-danger');
+          valid = false;
+        } else {
+          damagePerLevelError.innerText = '';
+          damagePerLevel.classList.remove('is-danger');
+        }
+
+        let baseDamage = document.getElementById("base-damage");
+        let baseDamageValue = baseDamage.value;
+        let baseDamageError = document.getElementById("base-damage-error");
+
+        if (!baseDamageValue) {
+          baseDamageError.innerText = 'Please enter a value.';
+          baseDamage.classList.add('is-danger');
+          valid = false;
+        } else {
+          baseDamageError.innerText = '';
+          baseDamage.classList.remove('is-danger');
+        }
+
+        let maxSpellLevel = document.getElementById("max-spell-level");
+        let maxSpellLevelValue = maxSpellLevel.value;
+        let maxSpellLevelError = document.getElementById("max-spell-level-error");
+
+        if (isNaN(maxSpellLevelValue) || maxSpellLevelValue < 2 || maxSpellLevelValue > 9) {
+          maxSpellLevelError.innerText = 'Please enter a value between 2-9.';
+          maxSpellLevel.classList.add('is-danger');
+          valid = false;
+        } else {
+          maxSpellLevelError.innerText = '';
+          maxSpellLevel.classList.remove('is-danger');
+        }
+
+        // Return the overall validity
+        return valid;
       }
 
       function copyMacroToClipboard() {
