@@ -24,7 +24,7 @@
           <label class="label">Base Spell Level:</label>
           <p class="has-text-danger" id="base-spell-level-error"></p>
           <div class="control">
-            <input class="input" type="number" id="base-spell-level" min="1" max="8" value="1">
+            <input class="input" type="number" id="base-spell-level" min="1" max="8" value="1" oninput="validateBaseSpellLevel()">
           </div>
         </div>
     
@@ -32,7 +32,7 @@
           <label class="label">Base Damage:</label>
           <p class="has-text-danger" id="base-damage-error"></p>
           <div class="control">
-            <input class="input" type="text" id="base-damage" placeholder="ex. 3d6 for fireball">
+            <input class="input" type="text" id="base-damage" placeholder="ex. 3d6 for fireball" oninput="validateBaseDamage()">
           </div>
         </div>
         
@@ -40,7 +40,7 @@
           <label class="label">Damage Dice Per Level:</label>
           <p class="has-text-danger" id="damage-per-level-error"></p>
           <div class="control">
-            <input class="input" type="text" id="damage-per-level" placeholder="ex. d6 for fireball" >
+            <input class="input" type="text" id="damage-per-level" placeholder="ex. d6 for fireball" oninput="validateDamagePerLevel()" >
           </div>
         </div>
     
@@ -48,7 +48,7 @@
           <label class="label">Max Spell Slot for scaling:</label>
           <p class="has-text-danger" id="max-spell-level-error"></p>
           <div class="control">
-            <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9">
+            <input class="input" type="number" id="max-spell-level" value="9" min="1" max="9" oninput="validateMaxSpellLevel()">
           </div>
         </div>
     
@@ -106,9 +106,15 @@
       }
 
       function validate() {
-        let valid = true; 
+        return [
+          validateBaseSpellLevel(),
+          validateDamagePerLevel(),
+          validateBaseDamage(),
+          validateMaxSpellLevel()
+        ].every(item => item === true)
+      }
 
-        // Set messages for any invalid fields
+      function validateBaseSpellLevel() {
         let baseSpellLevel = document.getElementById("base-spell-level");
         let baseSpellLevelValue = baseSpellLevel.value;
         let baseSpellLevelError = document.getElementById("base-spell-level-error");
@@ -116,38 +122,47 @@
         if (isNaN(baseSpellLevelValue) || baseSpellLevelValue < 1 || baseSpellLevelValue > 8) {
           baseSpellLevelError.innerText = 'Please enter a value between 1-8.';
           baseSpellLevel.classList.add('is-danger');
-          valid = false;
+          return false;
         } else {
           baseSpellLevelError.innerText = '';
           baseSpellLevel.classList.remove('is-danger');
+          return true;
         }
+      }
 
+      function validateDamagePerLevel() {
         let damagePerLevel = document.getElementById("damage-per-level");
         let damagePerLevelValue = damagePerLevel.value;
         let damagePerLevelError = document.getElementById("damage-per-level-error");
 
-        if (!damagePerLevelValue) {
+        if (!damagePerLevelValue.trim()) {
           damagePerLevelError.innerText = 'Please enter a value.';
           damagePerLevel.classList.add('is-danger');
-          valid = false;
+          return false;
         } else {
           damagePerLevelError.innerText = '';
           damagePerLevel.classList.remove('is-danger');
+          return true;
         }
+      }
 
+      function validateBaseDamage() {
         let baseDamage = document.getElementById("base-damage");
         let baseDamageValue = baseDamage.value;
         let baseDamageError = document.getElementById("base-damage-error");
 
-        if (!baseDamageValue) {
+        if (!baseDamageValue.trim()) {
           baseDamageError.innerText = 'Please enter a value.';
           baseDamage.classList.add('is-danger');
-          valid = false;
+          return false;
         } else {
           baseDamageError.innerText = '';
           baseDamage.classList.remove('is-danger');
+          return true;
         }
+      }
 
+      function validateMaxSpellLevel() {
         let maxSpellLevel = document.getElementById("max-spell-level");
         let maxSpellLevelValue = maxSpellLevel.value;
         let maxSpellLevelError = document.getElementById("max-spell-level-error");
@@ -155,14 +170,12 @@
         if (isNaN(maxSpellLevelValue) || maxSpellLevelValue < 2 || maxSpellLevelValue > 9) {
           maxSpellLevelError.innerText = 'Please enter a value between 2-9.';
           maxSpellLevel.classList.add('is-danger');
-          valid = false;
+          return false;
         } else {
           maxSpellLevelError.innerText = '';
           maxSpellLevel.classList.remove('is-danger');
+          return true;
         }
-
-        // Return the overall validity
-        return valid;
       }
 
       function copyMacroToClipboard() {
