@@ -82,7 +82,7 @@ class SpellMacroGenerator:
                 damage_die = str(upcast_dice)
 
             # Only show components with values.
-            damage = f'{damage_die} + {base_damage}' if damage_die and base_damage else damage_die + base_damage
+            damage = f'{base_damage} + {damage_die}' if damage_die and base_damage else damage_die + base_damage
 
             yield f'Level {level} ({damage}),{multiplier}'
 
