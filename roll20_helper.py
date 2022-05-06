@@ -10,12 +10,15 @@ class Die:
         self.multiplier = int(multiplier)
 
     def multiply(self, factor: int) -> 'Die':
-        return Die(self.sides, self.multiplier*factor)
+        return Die(self.sides, self.multiplier*int(factor))
 
     def is_die(input_string: str) -> bool:
-        return re.fullmatch(r'\d*[d|D]\d+', input_string)
+        return input_string is not None and re.fullmatch(r'\d*[d|D]\d+', input_string)
 
     def from_string(input_string: str) -> 'Die':
+        if not Die.is_die(input_string):
+            raise Exception(f'"{input_string}" is not a die.')
+        
         input_string = input_string.lower()
 
         # If no number is present before the die, assume it's a single die.
