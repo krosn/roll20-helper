@@ -1,4 +1,5 @@
 # [Launch it!](https://roll20-helper.herokuapp.com/static/spell_macro.html)
+![screenshot of the site](/images/roll20-helper.png?raw=true "Screenshot of the site")
 
 # Development
 ## Using the virtual environment
